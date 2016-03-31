@@ -1,0 +1,4 @@
+*.pyc
+*.db
+build
+node_modules
