@@ -1,6 +1,29 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+// Option 1: get csrf token from cookies, using this function
+// function getCookie(name) {
+//     var cookieValue = null;
+//     if (document.cookie && document.cookie !== '') {
+//         var cookies = document.cookie.split(';');
+//         for (var i = 0; i < cookies.length; i++) {
+//             var cookie = jQuery.trim(cookies[i]);
+//             // Does this cookie string begin with the name we want?
+//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//                 break;
+//             }
+//         }
+//     }
+//     return cookieValue;
+// }
+// var csrftoken = getCookie('csrftoken');
+// above code is working
+
+// Option 2: get csrf token from cookies, using library, js-cookies need to be installed
+var Cookies = require('js-cookie')
+var csrftoken = Cookies.get('csrftoken');
+
 /*
 var ItemList = React.createClass({
   getInitialState: function() {
@@ -96,13 +119,14 @@ var GameForm = React.createClass({
   render: function(){
     return (
       <form className="form-horizontal" onSubmit={this.props.handleSubmitClick}>
+
         <label forHtml='name'>Name</label><input ref='name' name='name' type='text' value={this.props.game.name} onChange={this.onChange} />
         <label forHtml='tags'>Tags</label>
         <select ref='tags' name='tags' value={this.props.game.tags} onChange={this.onChange}>
-          <option value='KIDS'>Kids</option>
-          <option value='RACING'>Racing</option>
-          <option value='RGP'>RGP</option>
-          <option value='SHOOTING'>Shooting</option>
+          <option value='1'>Kids</option>
+          <option value='2'>Racing</option>
+          <option value='3'>RGP</option>
+          <option value='4'>Shooting</option>
         </select>
         <br />
         <input type='submit' value={this.props.game.id?"Save (id=" + this.props.game.id+ ")":"Add"} />
@@ -175,7 +199,7 @@ var GamePanel = React.createClass({
       editingGame: {
         name: name,
         tags: tags,
-        id: this.state.editingGame.id
+        id: this.state.editingGame.id,
       }
     });
   },
@@ -208,21 +232,25 @@ var GamePanel = React.createClass({
     e.preventDefault();
     if(this.state.editingGame.id) {
       $.ajax({
-        url: this.props.url + 'games/' + this.state.editingGame.id + '/',
+        url: this.props.url + 'games/' + this.state.editingGame.id + '/' ,
         dataType: 'json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
         method: 'PUT',
         data: this.state.editingGame,
         cache: false,
         success: function(data){
           this.setState({
-            message: "Successfully updated game!"
+            message: "Game successfully updated!"
           });
           this.reloadGames('');
         }.bind(this),
         error: function(xhr, status, err) {
           console.error(this.props.url, status, err.toString());
+
           this.setState({
-            message: err.toString()
+            message: err.toString()+this.props.url+status
           });
         }.bind(this)
       });
@@ -230,17 +258,20 @@ var GamePanel = React.createClass({
       $.ajax({
         url: this.props.url + 'games/',
         dataType: 'json',
-        method: 'POST', 
+        method: 'POST',
         data: this.state.editingGame,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
         cache: false,
         success: function(data){
           this.setState({
-            message: "Successfully added game !"
+            message: "Game successfully added !"
           });
           this.reloadGames('');
         }.bind(this),
         error: function(xhr, status, err){
-          console.error(this.props.url, status, err,toString());
+          console.error(this.props.url, status, err.toString());
           this.setState({
             message: err.toString()
           });
@@ -256,6 +287,9 @@ var GamePanel = React.createClass({
     $.ajax({
       url: this.props.url+ 'games/' + this.state.editingGame.id + '/',
       method: 'DELETE',
+      beforeSend: function (xhr) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      },
       cache: false,
       success: function(data){
         this.setState({
@@ -280,23 +314,3 @@ ReactDOM.render(
   <GamePanel url="/project/"/>,
   document.getElementById('main_container')
   )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
