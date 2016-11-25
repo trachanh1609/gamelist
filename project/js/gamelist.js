@@ -129,9 +129,9 @@ var GameForm = React.createClass({
           <option value='4'>Shooting</option>
         </select>
         <br />
-        <input type='submit' value={this.props.game.id?"Save (id=" + this.props.game.id+ ")":"Add"} />
-        {this.props.game.id?<button onClick={this.props.handleDeleteClick}>Delete</button>:null}
-        {this.props.game.id?<button onClick={this.props.handleCancelClick}>Cancel</button>:null}
+        <input type='submit' className="btn btn-success" value={this.props.game.id?"Save (id=" + this.props.game.id+ ")":"Add"} />
+        {this.props.game.id?<button className="btn btn-danger" onClick={this.props.handleDeleteClick}>Delete</button>:null}
+        {this.props.game.id?<button className="btn btn-warning" onClick={this.props.handleCancelClick}>Cancel</button>:null}
         {this.props.message?<div>{this.props.message}</div>:null}
       </form>
     );
@@ -161,13 +161,11 @@ var GamePanel = React.createClass({
   render:function() {
     return(
       <div className="row">
-        <div className="col-md-1">
-        </div>
-        <div className="col-md-4">
+        <div className="col-md-6">
           <GameTable games={this.state.games} handleEditClickPanel={this.handleEditClickPanel} />
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-6">
           <GameForm
             game={this.state.editingGame}
             message={this.state.message}
