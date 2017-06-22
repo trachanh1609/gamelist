@@ -9,6 +9,7 @@ Install node dependencies.
 
 Install gulp.
 - $npm install -g gulp
+
 Build JS.
 - $cd gamelist
 - $gulp build
