@@ -74,10 +74,30 @@ ReactDOM.render(
 
 var GameTableRow = React.createClass({
   render: function(){
+    var tagnames = ''
+    this.props.game.tags.forEach(function(tag){
+      switch(tag) {
+          case 1:
+              tagnames += 'Action '
+              break;
+          case 2:
+              tagnames += 'Sports '
+              break;
+          case 3:
+              tagnames += 'Role-playing '
+              break;
+          case 4:
+              tagnames += 'Strategy '
+              break;
+          default:
+              tagnames += 'No tag '
+      }
+    })
+
     return (
       <tr>
         <td>{this.props.game.name}</td>
-        <td>{this.props.game.tags}</td>
+        <td>{tagnames}</td>
         <td><a href='#' onClick={this.onClick}>Edit or Delete</a></td>
       </tr>
     );
@@ -123,10 +143,10 @@ var GameForm = React.createClass({
         <label forHtml='name'>Name</label><input ref='name' name='name' type='text' value={this.props.game.name} onChange={this.onChange} />
         <label forHtml='tags'>Tags</label>
         <select ref='tags' name='tags' value={this.props.game.tags} onChange={this.onChange}>
-          <option value='1'>Kids</option>
-          <option value='2'>Racing</option>
-          <option value='3'>RGP</option>
-          <option value='4'>Shooting</option>
+          <option value='1'>Action</option>
+          <option value='2'>Sports</option>
+          <option value='3'>Role-playing</option>
+          <option value='4'>Strategy</option>
         </select>
         <br />
         <input type='submit' className="btn btn-success" value={this.props.game.id?"Save (id=" + this.props.game.id+ ")":"Add"} />

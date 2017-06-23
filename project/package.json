@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "start": "gulp build && cd .. && python manage.py runserver 0.0.0.0:8000"
+  },
   "devDependencies": {
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-react": "^6.5.0",
